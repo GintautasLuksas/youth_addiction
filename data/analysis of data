@@ -1,0 +1,16 @@
+Column Details
+Year: Ranges from 2020 to 2024.
+Age_Group: Categorical age ranges (e.g., 10-14, 15-19).
+Gender: Categories include Male, Female, and Both.
+Smoking_Prevalence: Prevalence of smoking, ranging from 5.00 to 50.00.
+Drug_Experimentation: Rate of drug experimentation, ranging from 10.00 to 69.99.
+Socioeconomic_Status: Categories include High, Middle, and Low.
+Peer_Influence: Scaled from 1 to 10, with a mean of 5.44.
+School_Programs: Indicates if there are school programs (Yes/No).
+Family_Background: Scaled from 1 to 10, with a mean of 5.51.
+Mental_Health: Scaled from 1 to 10, with a mean of 5.47.
+Access_to_Counseling: Indicates if counseling is available (Yes/No).
+Parental_Supervision: Scaled from 1 to 10, with a mean of 5.53.
+Substance_Education: Indicates if substance education is provided (Yes/No).
+Community_Support: Scaled from 1 to 10, with a mean of 5.54.
+Media_Influence: Scaled from 1 to 10, with a mean of 5.51.
