@@ -13,4 +13,4 @@ Access_to_Counseling: Indicates if counseling is available (Yes/No).
 Parental_Supervision: Scaled from 1 to 10, with a mean of 5.53.
 Substance_Education: Indicates if substance education is provided (Yes/No).
 Community_Support: Scaled from 1 to 10, with a mean of 5.54.
-Media_Influence: Scaled from 1 to 10, with a mean of 5.51.
+Media_Influence: Scaled from 1 to 10, with a mean of 5.51. 
