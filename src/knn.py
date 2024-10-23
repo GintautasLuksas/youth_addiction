@@ -1,37 +1,69 @@
-# src/knn.py
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score
+import numpy as np
 
+def run_knn_with_gridsearch():
+    """
+    Load the dataset, split it into training and test sets, and run a K-Nearest Neighbors (KNN) model
+    with GridSearchCV to optimize hyperparameters.
 
-def run_knn():
-    """Run K-Nearest Neighbors Classifier with binary target and evaluate using classification metrics."""
-    data = pd.read_csv("../data/processed/youth_smoking_drug_data_final_preprocessed.csv")
+    The function uses KNN to classify smoking prevalence based on several features.
+    It outputs model performance metrics such as accuracy, precision, and recall on the test set.
+    """
 
-    # Create binary target variable for high vs. low smoking prevalence
-    data['High_Smoking_Prevalence'] = (data['scaler__Smoking_Prevalence'] > 0.5).astype(int)
+    data = pd.read_csv(
+        "C:/Users/BossJore/PycharmProjects/python_SQL/youth_addiction/data/processed/youth_smoking_drug_data_final_preprocessed.csv"
+    )
 
-    # Exclude only the target column and any irrelevant columns you don't want to use
-    X = data.drop(columns=['scaler__Smoking_Prevalence', 'High_Smoking_Prevalence'])
-    y = data['High_Smoking_Prevalence']
+    X = data[[
+        'scaler__Drug_Experimentation',
+        'scaler__Peer_Influence',
+        'scaler__Family_Background',
+        'scaler__Mental_Health',
+        'scaler__Community_Support',
+        'scaler__Media_Influence',
+        'remainder__School_Programs',
+        'remainder__Access_to_Counseling',
+        'remainder__Substance_Education',
+        'remainder__Year',
+        'remainder__Age_Group',
+        'remainder__Parental_Supervision',
+        'onehot__Gender_1',
+        'onehot__Gender_2',
+        'onehot__Socioeconomic_Status_1',
+        'onehot__Socioeconomic_Status_2'
+    ]]
 
-    # Split data into training and testing sets
+    y = np.where(data['scaler__Smoking_Prevalence'] > 0.5, 1, 0)
+
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize the KNN model (you can experiment with different values for n_neighbors)
-    knn_model = KNeighborsClassifier(n_neighbors=5)
-    knn_model.fit(X_train, y_train)
+    knn_model = KNeighborsClassifier()
 
-    # Make predictions on the test set
-    y_pred = knn_model.predict(X_test)
+    param_grid = {
+        'n_neighbors': [3, 5, 7, 10],
+        'weights': ['uniform', 'distance'],
+        'metric': ['euclidean', 'manhattan', 'minkowski']
+    }
 
-    # Evaluate the model using classification metrics
-    print("K-Nearest Neighbors Metrics")
+    grid_search = GridSearchCV(knn_model, param_grid, cv=5, scoring='accuracy')
+
+    grid_search.fit(X_train, y_train)
+
+    print("Best Hyperparameters: ", grid_search.best_params_)
+    print("Best Cross-Validated Accuracy from GridSearch: ", grid_search.best_score_)
+
+    best_model = grid_search.best_estimator_
+
+    best_model.fit(X_train, y_train)
+    y_pred = best_model.predict(X_test)
+
+    print("KNN Metrics on Test Set")
     print("Accuracy:", accuracy_score(y_test, y_pred))
     print("Precision:", precision_score(y_test, y_pred, average='binary'))
     print("Recall:", recall_score(y_test, y_pred, average='binary'))
 
-
 if __name__ == "__main__":
-    run_knn()
+    run_knn_with_gridsearch()

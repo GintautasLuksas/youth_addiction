@@ -16,29 +16,41 @@ def preprocess_data(file_path):
     """
     data = pd.read_csv(file_path)
 
+    # Continuous features including the new ones 'Year', 'Age_Group', and 'Parental_Supervision'
     continuous_features = ['Smoking_Prevalence', 'Drug_Experimentation', 'Peer_Influence',
-                           'Family_Background', 'Mental_Health', 'Community_Support', 'Media_Influence']
+                           'Family_Background', 'Mental_Health', 'Community_Support', 'Media_Influence',
+                           'Year', 'Parental_Supervision']
+
     scaler = MinMaxScaler()
 
+    # Categorical features
     categorical_features = ['Gender', 'Socioeconomic_Status']
+
+    # One-hot encoder for categorical features
     one_hot_encoder = OneHotEncoder(sparse_output=False, drop='first')
 
+    # Label encoding 'Age_Group'
     data['Age_Group'] = LabelEncoder().fit_transform(data['Age_Group'])
 
+    # Binary features (No transformation needed for these)
     binary_features = ['School_Programs', 'Access_to_Counseling', 'Substance_Education']
 
+    # Preprocessing pipeline
     preprocessor = ColumnTransformer(
         transformers=[
             ('scaler', scaler, continuous_features),
             ('onehot', one_hot_encoder, categorical_features)
         ],
-        remainder='passthrough'
+        remainder='passthrough'  # Keep other features (like binary) unchanged
     )
 
+    # Apply transformations
     data_transformed = preprocessor.fit_transform(data)
 
+    # Get transformed feature names
     feature_names = preprocessor.get_feature_names_out()
 
+    # Create DataFrame with the preprocessed data
     data_preprocessed = pd.DataFrame(data_transformed, columns=feature_names).round(3)
 
     return data_preprocessed
